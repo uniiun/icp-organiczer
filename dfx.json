@@ -1,0 +1,27 @@
+{
+  "canisters": {
+    "organiczer_backend": {
+      "candid": "src/organiczer_backend/organiczer_backend.did",
+      "package": "organiczer_backend",
+      "type": "rust"
+    },
+    "organiczer_frontend": {
+      "dependencies": [
+        "organiczer_backend"
+      ],
+      "source": [
+        "src/organiczer_frontend/dist"
+      ],
+      "type": "assets",
+      "workspace": "organiczer_frontend"
+    }
+  },
+  "defaults": {
+    "build": {
+      "args": "",
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+}
