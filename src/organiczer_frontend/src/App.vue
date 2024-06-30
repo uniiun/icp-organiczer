@@ -12,7 +12,7 @@ async function handleSubmit(e) {
   });
 }
 </script>
-
+<!-- /* sprawdzam tu tylko czy git działa */ -->
 <template>
   <main>
     <img src="/logo2.svg" alt="DFINITY logo" />
