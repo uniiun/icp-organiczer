@@ -1,3 +1,15 @@
+type Event = record {
+    title: text;
+    description: text;
+    date: text;
+    time: opt text;
+};
+
 service : {
-    "greet": (text) -> (text) query;
+    "get_all_events": () -> (vec Event) query;
+    "get_event_by_index": (nat64) -> (opt Event) query;
+    "create_event": (text, text, text, opt text) -> (bool);
+    "update_event": (nat64, text, text, text, opt text) -> (bool);
+    "delete_event": (nat64) -> (bool);
+    "search_events_in_range": (text, text) -> (vec Event) query;
 }
