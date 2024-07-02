@@ -22,17 +22,17 @@ fn get_event_by_index(index: u64) -> Option<Event> {
 }
 
 #[ic_cdk_macros::update]
-fn create_event(title: String, description: String, date: String, time: Option<String>) -> bool {
+fn create_event(title: String, description: Option<String>, date: String, time: Option<String>) -> bool {
     let mut calendar = CALENDAR.lock().unwrap();
-    let event = Event::new(&title, &description, &date, time);
+    let event = Event::new(&title, &description.unwrap_or_else(|| "".to_string()), &date, time);
     calendar.add(event);
     true
 }
 
 #[ic_cdk_macros::update]
-fn update_event(index: u64, title: String, description: String, date: String, time: Option<String>) -> bool {
+fn update_event(index: u64, title: String, description: Option<String>, date: String, time: Option<String>) -> bool {
     let mut calendar = CALENDAR.lock().unwrap();
-    let event = Event::new(&title, &description, &date, time);
+    let event = Event::new(&title, &description.unwrap_or_else(|| "".to_string()), &date, time);
     calendar.edit(index as usize, event)
 }
 

@@ -4,7 +4,7 @@ use candid::CandidType;
 #[derive(Clone, Debug, Serialize, Deserialize, CandidType)]
 pub struct Event {
     pub title: String,
-    pub description: String,
+    pub description: Option<String>,
     pub date: String,
     pub time: Option<String>,
 }
@@ -13,7 +13,7 @@ impl Event {
     pub fn new(title: &str, description: &str, date: &str, time: Option<String>) -> Event {
         Event {
             title: title.to_string(),
-            description: description.to_string(),
+            description: if description.is_empty() { None } else { Some(description.to_string()) },
             date: date.to_string(),
             time,
         }
