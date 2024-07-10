@@ -16,30 +16,31 @@ fn get_all_events() -> Vec<Event> {
 }
 
 #[ic_cdk_macros::query]
-fn get_event_by_index(index: u64) -> Option<Event> {
+fn get_event_by_id(id: u64) -> Option<Event> {
     let calendar = CALENDAR.lock().unwrap();
-    calendar.get(index as usize).cloned()
+    calendar.get_event_by_id(id).cloned()
 }
 
 #[ic_cdk_macros::update]
-fn create_event(title: String, description: Option<String>, date: String, time: Option<String>) -> bool {
+fn create_event(title: String, description: Option<String>, date: String, time: Option<String>) -> u64 {
     let mut calendar = CALENDAR.lock().unwrap();
-    let event = Event::new(&title, &description.unwrap_or_else(|| "".to_string()), &date, time);
+    let event = Event::new(calendar.next_id, &title, description.as_deref(), &date, time.as_deref());
+    let id = event.id;
     calendar.add(event);
-    true
+    id
 }
 
 #[ic_cdk_macros::update]
-fn update_event(index: u64, title: String, description: Option<String>, date: String, time: Option<String>) -> bool {
+fn update_event(id: u64, title: String, description: Option<String>, date: String, time: Option<String>) -> bool {
     let mut calendar = CALENDAR.lock().unwrap();
-    let event = Event::new(&title, &description.unwrap_or_else(|| "".to_string()), &date, time);
-    calendar.edit(index as usize, event)
+    let event = Event::new(id, &title, description.as_deref(), &date, time.as_deref());
+    calendar.edit(id, event)
 }
 
 #[ic_cdk_macros::update]
-fn delete_event(index: u64) -> bool {
+fn delete_event(id: u64) -> bool {
     let mut calendar = CALENDAR.lock().unwrap();
-    calendar.remove(index as usize)
+    calendar.remove(id)
 }
 
 #[ic_cdk_macros::query]

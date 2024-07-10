@@ -3,6 +3,7 @@ use candid::CandidType;
 
 #[derive(Clone, Debug, Serialize, Deserialize, CandidType)]
 pub struct Event {
+    pub id: u64,
     pub title: String,
     pub description: Option<String>,
     pub date: String,
@@ -10,39 +11,43 @@ pub struct Event {
 }
 
 impl Event {
-    pub fn new(title: &str, description: &str, date: &str, time: Option<String>) -> Event {
+    pub fn new(id: u64, title: &str, description: Option<&str>, date: &str, time: Option<&str>) -> Event {
         Event {
+            id,
             title: title.to_string(),
-            description: if description.is_empty() { None } else { Some(description.to_string()) },
+            description: description.map(|s| s.to_string()),
             date: date.to_string(),
-            time,
+            time: time.map(|s| s.to_string()),
         }
     }
 }
 
 pub struct Calendar {
     events: Vec<Event>,
+    pub next_id: u64,
 }
 
 impl Calendar {
     pub fn new() -> Calendar {
-        Calendar { events: Vec::new() }
+        Calendar { events: Vec::new(), next_id: 1 }
     }
 
     pub fn get_all(&self) -> &Vec<Event> {
         &self.events
     }
 
-    pub fn get(&self, index: usize) -> Option<&Event> {
-        self.events.get(index)
+    pub fn get_event_by_id(&self, id: u64) -> Option<&Event> {
+        self.events.iter().find(|event| event.id == id)
     }
 
-    pub fn add(&mut self, event: Event) {
+    pub fn add(&mut self, mut event: Event) {
+        event.id = self.next_id;
+        self.next_id += 1;
         self.events.push(event);
     }
 
-    pub fn edit(&mut self, index: usize, event: Event) -> bool {
-        if index < self.events.len() {
+    pub fn edit(&mut self, id: u64, event: Event) -> bool {
+        if let Some(index) = self.events.iter().position(|e| e.id == id) {
             self.events[index] = event;
             true
         } else {
@@ -50,8 +55,8 @@ impl Calendar {
         }
     }
 
-    pub fn remove(&mut self, index: usize) -> bool {
-        if index < self.events.len() {
+    pub fn remove(&mut self, id: u64) -> bool {
+        if let Some(index) = self.events.iter().position(|e| e.id == id) {
             self.events.remove(index);
             true
         } else {

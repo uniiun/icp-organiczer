@@ -1,4 +1,5 @@
 type Event = record {
+    id: nat64;
     title: text;
     description: opt text;
     date: text;
@@ -7,8 +8,8 @@ type Event = record {
 
 service : {
     get_all_events: () -> (vec Event) query;
-    get_event_by_index: (nat64) -> (opt Event) query;
-    create_event: (text, opt text, text, opt text) -> (bool);
+    get_event_by_id: (nat64) -> (opt Event) query;
+    create_event: (text, opt text, text, opt text) -> (nat64);
     update_event: (nat64, text, opt text, text, opt text) -> (bool);
     delete_event: (nat64) -> (bool);
     search_events_in_range: (text, text) -> (vec Event) query;
